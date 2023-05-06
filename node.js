@@ -1,27 +1,45 @@
 const http = require("http");
-
-const hostname = '127.0.0.1';
-const port = 3000;
+const fs = require("fs");
+const path = require("path");
 
 const server = http.createServer((req, res) => {
-    res.statusCode = 200;
-    res.setHeader('Content-Type', 'text/plain');
-    res.end()
-})
+  if (req.url === "/") {
+    const htmlPath = path.join(__dirname, "nodeHtml.html");
+    const htmlContent = fs.readFileSync(htmlPath, "utf8");
 
+    res.writeHead(200, { "Content-Type": "text/html" });
+    res.write(htmlContent);
+    res.end();
+  } else if (req.url === "/count" && req.method === "POST") {
+    let body = "";
+    req.on("data", (chunk) => {
+      body += chunk.toString();
+    });
+    req.on("end", () => {
+      const type = body.trim();
+      let number = 0;
+      if (type === "plus") {
+        number = parseInt(req.headers.cookie.split("=")[1]) + 1;
+      } else if (type === "minus") {
+        const currentNumber = parseInt(req.headers.cookie.split("=")[1]);
+        if (currentNumber > 0) {
+          number = currentNumber - 1;
+        }
+      }
+      res.writeHead(200, {
+        "Content-Type": "text/plain",
+        "Set-Cookie": `number=${number}; HttpOnly`,
+      });
+      res.write(number.toString());
+      res.end();
+    });
+  } else {
+    res.writeHead(404, { "Content-Type": "text/plain" });
+    res.write("404 Not Found");
+    res.end();
+  }
+});
 
-function count(type) {
-    const resultElement = document.getElementById('result');
-
-    let number = resultElement.value;
-        console.log(number)
-
-    if(type === 'plus'){
-        number = parseInt(number) + 1;
-        console.log(number)
-    } else if( type === 'minus' && number > 0){
-        number = parseInt(number) - 1;
-    }
-    resultElement.value = number;
-}
-console.log("start")
+server.listen(3000, () => {
+  console.log("Server started at http://localhost:3000");
+});
