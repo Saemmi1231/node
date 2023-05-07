@@ -1,38 +1,18 @@
 const http = require("http");
+//fs : 파일 입출력 처리할 때 사용
 const fs = require("fs");
 const path = require("path");
 
 const server = http.createServer((req, res) => {
   if (req.url === "/") {
-    const htmlPath = path.join(__dirname, "nodeHtml.html");
+    //resolve는 join과 nomalize와 합친 것
+    const htmlPath = path.resolve(__dirname, "nodeHtml.html");
+    console.log(htmlPath, "=======");
     const htmlContent = fs.readFileSync(htmlPath, "utf8");
 
     res.writeHead(200, { "Content-Type": "text/html" });
     res.write(htmlContent);
     res.end();
-  } else if (req.url === "/count" && req.method === "POST") {
-    let body = "";
-    req.on("data", (chunk) => {
-      body += chunk.toString();
-    });
-    req.on("end", () => {
-      const type = body.trim();
-      let number = 0;
-      if (type === "plus") {
-        number = parseInt(req.headers.cookie.split("=")[1]) + 1;
-      } else if (type === "minus") {
-        const currentNumber = parseInt(req.headers.cookie.split("=")[1]);
-        if (currentNumber > 0) {
-          number = currentNumber - 1;
-        }
-      }
-      res.writeHead(200, {
-        "Content-Type": "text/plain",
-        "Set-Cookie": `number=${number}; HttpOnly`,
-      });
-      res.write(number.toString());
-      res.end();
-    });
   } else {
     res.writeHead(404, { "Content-Type": "text/plain" });
     res.write("404 Not Found");
