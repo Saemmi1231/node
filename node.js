@@ -2,6 +2,8 @@ const http = require("http");
 //fs : 파일 입출력 처리할 때 사용
 const fs = require("fs");
 const path = require("path");
+const Handlebars = require("handlebars");
+
 
 const server = http.createServer((req, res) => {
   if (req.url === "/") {

@@ -10,9 +10,12 @@
     </style>
   </head>
   <body>
-    <div>
-      <h1>할수있다</h1>
+  <div>
+      <h1>할수있다. I can do it!</h1>
     </div>
+  </body>
+  </script>
+    <body>
     <div>
       <input type="text" id="result" value="0" />
       <button id="plus">+</button>
@@ -34,20 +37,24 @@
         count("minus");
       });
 
-      function count(type) {
-        const resultElement = document.getElementById("result");
 
-        let number = resultElement.value;
+    function count(type) {
+      const resultElement = document.getElementById("result");
+      let number = resultElement.value;
+      console.log(number);
+
+
+      if (type === "plus") {
+        number = parseInt(number) + 1;
         console.log(number);
-
-        if (type === "plus") {
-          number = parseInt(number) + 1;
-          console.log(number);
-        } else if (type === "minus" && number > 0) {
-          number = parseInt(number) - 1;
-        }
-        resultElement.value = number;
+      } else if (type === "minus" && number > 0) {
+        number = parseInt(number) - 1;
       }
+      resultElement.value = number;
+    }
+    </script>
+    <script>
+      <input type='button' value={resultElement.value} onclick = "inputbox" ></input>
     </script>
   </body>
 </html>
